@@ -87,6 +87,14 @@ const moveLeft = (grid: number[][]): number[][] => {
   return newGrid;
 };
 
+const moveRight = (grid: number[][]): number[][] => {
+  let newGrid = reverse(grid);
+  newGrid = moveLeft(newGrid);
+  newGrid = reverse(newGrid);
+
+  return newGrid;
+};
+
 const TwentyFortyEight: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(initGrid());
 
@@ -104,6 +112,9 @@ const TwentyFortyEight: React.FC = () => {
     switch (dir) {
       case Direction.Left:
         setGrid((prevGrid) => moveLeft(prevGrid));
+        break;
+      case Direction.Right:
+        setGrid((prevGrid) => moveRight(prevGrid));
         break;
       default:
         break;
