@@ -9,7 +9,7 @@ export enum Direction {
 
 type OnKeyPressHandler = (keyPressed: Direction) => void;
 
-const useArrowKeyPress = (onKeyPress?: OnKeyPressHandler) => {
+const useArrowKeyPress = (onArrowKeyPress?: OnKeyPressHandler) => {
   const keyPressRef = useRef<Direction>(Direction.Right);
 
   useEffect(() => {
@@ -17,21 +17,23 @@ const useArrowKeyPress = (onKeyPress?: OnKeyPressHandler) => {
       switch (event.key) {
         case "ArrowUp":
           keyPressRef.current = Direction.Up;
+          onArrowKeyPress && onArrowKeyPress(keyPressRef.current);
           break;
         case "ArrowDown":
           keyPressRef.current = Direction.Down;
+          onArrowKeyPress && onArrowKeyPress(keyPressRef.current);
           break;
         case "ArrowLeft":
           keyPressRef.current = Direction.Left;
+          onArrowKeyPress && onArrowKeyPress(keyPressRef.current);
           break;
         case "ArrowRight":
           keyPressRef.current = Direction.Right;
+          onArrowKeyPress && onArrowKeyPress(keyPressRef.current);
           break;
         default:
           break;
       }
-
-      onKeyPress && onKeyPress(keyPressRef.current);
     };
 
     window.addEventListener("keydown", keyDownHandler);
@@ -39,7 +41,7 @@ const useArrowKeyPress = (onKeyPress?: OnKeyPressHandler) => {
     return () => {
       window.removeEventListener("keydown", keyDownHandler);
     };
-  }, [onKeyPress]);
+  }, [onArrowKeyPress]);
 
   return keyPressRef;
 };

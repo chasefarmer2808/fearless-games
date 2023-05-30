@@ -87,6 +87,7 @@ const moveLeft = (grid: number[][]): number[][] => {
   return newGrid;
 };
 
+// FIXME: Swaps edge tiles.
 const moveRight = (grid: number[][]): number[][] => {
   let newGrid = reverse(grid);
   newGrid = moveLeft(newGrid);
@@ -107,6 +108,24 @@ const moveDown = (grid: number[][]): number[][] => {
   let newGrid = transpose(grid);
   newGrid = moveRight(newGrid);
   newGrid = transpose(newGrid);
+
+  return newGrid;
+};
+
+// FIXME: For some reason, being called twice.
+const insertNewTile = (grid: number[][]): number[][] => {
+  const newGrid = [...grid];
+
+  let row = Utils.getRandomInt(3);
+  let col = Utils.getRandomInt(3);
+
+  // Randomly find an open position.
+  while (newGrid[row][col] !== 0) {
+    row = Utils.getRandomInt(3);
+    col = Utils.getRandomInt(3);
+  }
+
+  newGrid[row][col] = 2;
 
   return newGrid;
 };
@@ -146,6 +165,8 @@ const TwentyFortyEight: React.FC = () => {
       console.log("You won!");
     } else if (didLoose()) {
       console.log("You lost!");
+    } else {
+      setGrid((prevGrid) => insertNewTile(prevGrid));
     }
   };
   useArrowKeyPress(handleArrowKeyPress);
