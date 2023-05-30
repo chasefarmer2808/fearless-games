@@ -7,7 +7,9 @@ export enum Direction {
   Down,
 }
 
-const useArrowKeyPress = () => {
+type OnKeyPressHandler = (keyPressed: Direction) => void;
+
+const useArrowKeyPress = (onKeyPress?: OnKeyPressHandler) => {
   const keyPressRef = useRef<Direction>(Direction.Right);
 
   useEffect(() => {
@@ -28,6 +30,8 @@ const useArrowKeyPress = () => {
         default:
           break;
       }
+
+      onKeyPress && onKeyPress(keyPressRef.current);
     };
 
     window.addEventListener("keydown", keyDownHandler);
@@ -35,7 +39,7 @@ const useArrowKeyPress = () => {
     return () => {
       window.removeEventListener("keydown", keyDownHandler);
     };
-  }, []);
+  }, [onKeyPress]);
 
   return keyPressRef;
 };

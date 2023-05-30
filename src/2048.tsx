@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Utils } from "./utils";
+import useArrowKeyPress, { Direction } from "./hooks/useArrowKeyPress";
 
 const initGrid = (): number[][] => {
   const grid = [
@@ -26,6 +27,27 @@ const initGrid = (): number[][] => {
 
 const TwentyFortyEight: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(initGrid());
+
+  const didWin = useCallback(() => {
+    return grid.some((row) => row.some((val) => val === 2048));
+  }, [grid]);
+
+  const didLoose = useCallback(() => {
+    return !grid.some((row) => row.some((val) => val === 0));
+  }, [grid]);
+
+  const handleArrowKeyPress = (dir: Direction) => {
+    console.log(dir);
+
+    // TODO: Handle dirs
+
+    if (didWin()) {
+      console.log("You won!");
+    } else if (didLoose()) {
+      console.log("You lost!");
+    }
+  };
+  useArrowKeyPress(handleArrowKeyPress);
 
   useEffect(() => {
     grid.forEach((row) => console.log(row));
