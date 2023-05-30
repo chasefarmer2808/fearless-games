@@ -25,6 +25,68 @@ const initGrid = (): number[][] => {
   return grid;
 };
 
+const compress = (grid: number[][]): number[][] => {
+  const compressedGrid = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ];
+
+  grid.forEach((row, rowIndex) => {
+    let marker = 0;
+
+    row.forEach((val, colIndex) => {
+      if (val != 0) {
+        compressedGrid[rowIndex][marker] = val;
+        marker++;
+      }
+    });
+  });
+
+  return compressedGrid;
+};
+
+const merge = (grid: number[][]) => {
+  grid.forEach((row, rowIndex) => {
+    row.forEach((_, colIndex) => {
+      if (
+        grid[rowIndex][colIndex] == grid[rowIndex][colIndex + 1] &&
+        grid[rowIndex][colIndex] !== 0
+      ) {
+        grid[rowIndex][colIndex] *= 2;
+        grid[rowIndex][colIndex + 1] = 0;
+      }
+    });
+  });
+};
+
+const reverse = (grid: number[][]): number[][] => {
+  return grid.map((row) => row.reverse());
+};
+
+const transpose = (grid: number[][]): number[][] => {
+  const newGrid: number[][] = [];
+
+  grid.forEach((row, rowIndex) => {
+    newGrid.push([]);
+
+    row.forEach((_, colIndex) => {
+      newGrid[rowIndex].push(grid[colIndex][rowIndex]);
+    });
+  });
+
+  return newGrid;
+};
+
+const moveLeft = (grid: number[][]): number[][] => {
+  let newGrid = compress(grid);
+  merge(newGrid);
+  newGrid = compress(newGrid);
+
+  return newGrid;
+};
+
 const TwentyFortyEight: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(initGrid());
 
@@ -39,7 +101,13 @@ const TwentyFortyEight: React.FC = () => {
   const handleArrowKeyPress = (dir: Direction) => {
     console.log(dir);
 
-    // TODO: Handle dirs
+    switch (dir) {
+      case Direction.Left:
+        setGrid((prevGrid) => moveLeft(prevGrid));
+        break;
+      default:
+        break;
+    }
 
     if (didWin()) {
       console.log("You won!");
