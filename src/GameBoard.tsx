@@ -4,15 +4,12 @@ import useArrowKeyPress, { Direction } from "./hooks/useArrowKeyPress";
 import { BOARD_SIZE, MIN_DELAY, START_DELAY } from "./const";
 import GameOverDialog from "./GameOverDialog";
 import classes from "./styles/GameBoard.module.css";
+import { Utils } from "./utils";
 
 export interface GridItem {
   row: number;
   col: number;
 }
-
-const getRandomInt = (max: number): number => {
-  return Math.floor(Math.random() * max);
-};
 
 const GameBoard: React.FC = () => {
   const [snake, setSnake] = useState<GridItem[]>([{ row: 1, col: 1 }]);
@@ -88,7 +85,7 @@ const GameBoard: React.FC = () => {
         }
       }
 
-      setFood(freeCells[getRandomInt(freeCells.length - 1)]);
+      setFood(freeCells[Utils.getRandomInt(freeCells.length - 1)]);
     };
 
     const handleGameTick = () => {
