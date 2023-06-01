@@ -10,10 +10,12 @@ export enum Direction {
 type OnKeyPressHandler = (keyPressed: Direction) => void;
 
 const useArrowKeyPress = (onArrowKeyPress?: OnKeyPressHandler) => {
-  const keyPressRef = useRef<Direction>(Direction.Right);
+  const keyPressRef = useRef<Direction>();
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
+      event.preventDefault();
+
       switch (event.key) {
         case "ArrowUp":
           keyPressRef.current = Direction.Up;

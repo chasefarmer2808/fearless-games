@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Utils } from "./utils";
+import GridController from "./2048/GridController";
 import useArrowKeyPress, { Direction } from "./hooks/useArrowKeyPress";
 
 const initGrid = (): number[][] => {
@@ -25,93 +26,6 @@ const initGrid = (): number[][] => {
   return grid;
 };
 
-const compress = (grid: number[][]): number[][] => {
-  const compressedGrid = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ];
-
-  grid.forEach((row, rowIndex) => {
-    let marker = 0;
-
-    row.forEach((val, colIndex) => {
-      if (val != 0) {
-        compressedGrid[rowIndex][marker] = val;
-        marker++;
-      }
-    });
-  });
-
-  return compressedGrid;
-};
-
-const merge = (grid: number[][]) => {
-  grid.forEach((row, rowIndex) => {
-    row.forEach((_, colIndex) => {
-      if (
-        grid[rowIndex][colIndex] == grid[rowIndex][colIndex + 1] &&
-        grid[rowIndex][colIndex] !== 0
-      ) {
-        grid[rowIndex][colIndex] *= 2;
-        grid[rowIndex][colIndex + 1] = 0;
-      }
-    });
-  });
-};
-
-const reverse = (grid: number[][]): number[][] => {
-  return grid.map((row) => row.reverse());
-};
-
-const transpose = (grid: number[][]): number[][] => {
-  const newGrid: number[][] = [];
-
-  grid.forEach((row, rowIndex) => {
-    newGrid.push([]);
-
-    row.forEach((_, colIndex) => {
-      newGrid[rowIndex].push(grid[colIndex][rowIndex]);
-    });
-  });
-
-  return newGrid;
-};
-
-const moveLeft = (grid: number[][]): number[][] => {
-  let newGrid = compress(grid);
-  merge(newGrid);
-  newGrid = compress(newGrid);
-
-  return newGrid;
-};
-
-// FIXME: Swaps edge tiles.
-const moveRight = (grid: number[][]): number[][] => {
-  let newGrid = reverse(grid);
-  newGrid = moveLeft(newGrid);
-  newGrid = reverse(newGrid);
-
-  return newGrid;
-};
-
-const moveUp = (grid: number[][]): number[][] => {
-  let newGrid = transpose(grid);
-  newGrid = moveLeft(newGrid);
-  newGrid = transpose(newGrid);
-
-  return newGrid;
-};
-
-const moveDown = (grid: number[][]): number[][] => {
-  let newGrid = transpose(grid);
-  newGrid = moveRight(newGrid);
-  newGrid = transpose(newGrid);
-
-  return newGrid;
-};
-
 // FIXME: For some reason, being called twice.
 const insertNewTile = (grid: number[][]): number[][] => {
   const newGrid = [...grid];
@@ -130,49 +44,52 @@ const insertNewTile = (grid: number[][]): number[][] => {
   return newGrid;
 };
 
+const didWin = (grid: number[][]): boolean => {
+  return grid.some((row) => row.some((val) => val === 2048));
+};
+
+const didLoose = (grid: number[][]): boolean => {
+  return !grid.some((row) => row.some((val) => val === 0));
+};
+
 const TwentyFortyEight: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(initGrid());
-
-  const didWin = useCallback(() => {
-    return grid.some((row) => row.some((val) => val === 2048));
-  }, [grid]);
-
-  const didLoose = useCallback(() => {
-    return !grid.some((row) => row.some((val) => val === 0));
-  }, [grid]);
 
   const handleArrowKeyPress = (dir: Direction) => {
     console.log(dir);
 
+    let newGrid: number[][] = [];
+
     switch (dir) {
       case Direction.Left:
-        setGrid((prevGrid) => moveLeft(prevGrid));
+        newGrid = GridController.moveLeft(grid);
         break;
       case Direction.Right:
-        setGrid((prevGrid) => moveRight(prevGrid));
+        newGrid = GridController.moveRight(grid);
         break;
       case Direction.Up:
-        setGrid((prevGrid) => moveUp(prevGrid));
+        newGrid = GridController.moveUp(grid);
         break;
       case Direction.Down:
-        setGrid((prevGrid) => moveDown(prevGrid));
+        newGrid = GridController.moveDown(grid);
         break;
       default:
         break;
     }
 
-    if (didWin()) {
-      console.log("You won!");
-    } else if (didLoose()) {
-      console.log("You lost!");
-    } else {
-      setGrid((prevGrid) => insertNewTile(prevGrid));
-    }
+    newGrid = insertNewTile(newGrid);
+    setGrid(newGrid);
   };
   useArrowKeyPress(handleArrowKeyPress);
 
   useEffect(() => {
     grid.forEach((row) => console.log(row));
+
+    if (didWin(grid)) {
+      console.log("You won!");
+    } else if (didLoose(grid)) {
+      console.log("You lost!");
+    }
   }, [grid]);
 
   return <div>Welcome to 2048!</div>;
