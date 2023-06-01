@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Utils } from "./utils";
 import GridController from "./2048/GridController";
 import useArrowKeyPress, { Direction } from "./hooks/useArrowKeyPress";

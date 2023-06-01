@@ -1,7 +1,3 @@
-const printGrid = (grid: number[][]) => {
-  grid.forEach((row) => console.log(row));
-};
-
 export default {
   compress(grid: number[][]): number[][] {
     const compressedGrid = [
