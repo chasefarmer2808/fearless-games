@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Utils } from "./utils";
-import GridController from "./2048/GridController";
-import useArrowKeyPress, { Direction } from "./hooks/useArrowKeyPress";
+import { Utils } from "../utils";
+import GridController from "./GridController";
+import useArrowKeyPress, { Direction } from "../hooks/useArrowKeyPress";
+import GameGrid from "./GameGrid";
+
+import classes from "../styles/2048/2048.module.css";
 
 const initGrid = (): number[][] => {
   const grid = [
@@ -93,7 +96,11 @@ const TwentyFortyEight: React.FC = () => {
     }
   }, [grid]);
 
-  return <div>Welcome to 2048!</div>;
+  return (
+    <div className={classes["gridContainer"]}>
+      <GameGrid grid={grid} />
+    </div>
+  );
 };
 
 export default TwentyFortyEight;

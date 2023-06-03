@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GameBoard from "./GameBoard.tsx";
-import TwentyFortyEight from "./2048.tsx";
+import TwentyFortyEight from "./2048/2048.tsx";
 
 const router = createBrowserRouter([
   {
