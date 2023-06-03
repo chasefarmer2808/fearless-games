@@ -26,7 +26,6 @@ const initGrid = (): number[][] => {
   return grid;
 };
 
-// FIXME: For some reason, being called twice.
 const insertNewTile = (grid: number[][]): number[][] => {
   const newGrid = [...grid];
 
@@ -77,8 +76,10 @@ const TwentyFortyEight: React.FC = () => {
         break;
     }
 
-    newGrid = insertNewTile(newGrid);
-    setGrid(newGrid);
+    if (!GridController.deepEquals(grid, newGrid)) {
+      newGrid = insertNewTile(newGrid);
+      setGrid(newGrid);
+    }
   };
   useArrowKeyPress(handleArrowKeyPress);
 

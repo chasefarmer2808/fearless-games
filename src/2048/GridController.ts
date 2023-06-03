@@ -50,6 +50,15 @@ export default {
 
     return newGrid;
   },
+  deepEquals(gridA: number[][], gridB: number[][]) {
+    return (
+      gridA.length == gridB.length &&
+      gridA.every((row, rowIndex) => row.length == gridB[rowIndex].length) &&
+      gridA.every((row, rowIndex) =>
+        row.every((col, colIndex) => col == gridB[rowIndex][colIndex])
+      )
+    );
+  },
   moveLeft(grid: number[][]): number[][] {
     let newGrid = this.compress(grid);
     newGrid = this.merge(newGrid);
